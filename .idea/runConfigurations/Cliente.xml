@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Cliente" type="Application" factoryName="Application" singleton="false">
+    <option name="MAIN_CLASS_NAME" value="co.edu.unicauca.cliente.servicios.ClienteDeObjetos" />
+    <module name="Cliente" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Cliente" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
