@@ -10,13 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-/**
- * i) Obtiene la dirección IP y el puerto del NS (rmiregistry) desde el archivo config.properties.
- *
- * Orden de búsqueda:
- *   1. Un archivo config.properties en el directorio de trabajo (permite cambiar la IP sin recompilar).
- *   2. El recurso config.properties del classpath (src/main/resources/config.properties).
- */
 public class UtilidadesConfiguracion
 {
     public static final String NOMBRE_ARCHIVO = "config.properties";
@@ -65,7 +58,6 @@ public class UtilidadesConfiguracion
         }
     }
 
-    /** Propiedad opcional: IP de esta máquina que se publicará en las referencias remotas. */
     public String getHostnameRMI()
     {
         String valor = propiedades.getProperty("rmi.hostname");

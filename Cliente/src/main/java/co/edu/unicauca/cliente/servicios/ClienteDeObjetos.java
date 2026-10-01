@@ -16,7 +16,7 @@ public class ClienteDeObjetos
         UsuarioCllbckImpl objNuevoUsuario = null;
         try
         {
-            //i) la dirección IP y el puerto del NS se leen del archivo config.properties
+            //la dirección IP y el puerto del NS se leen del archivo config.properties
             UtilidadesConfiguracion configuracion = new UtilidadesConfiguracion();
             String direccionIpRMIRegistry = configuracion.getDireccionIpNS();
             int numPuertoRMIRegistry = configuracion.getPuertoNS();
@@ -30,7 +30,7 @@ public class ClienteDeObjetos
             }
 
             ControladorServidorChatInt servidor = (ControladorServidorChatInt)
-                    UtilidadesRegistroC.obtenerObjRemoto(numPuertoRMIRegistry, direccionIpRMIRegistry, "ServidorChat");
+            UtilidadesRegistroC.obtenerObjRemoto(numPuertoRMIRegistry, direccionIpRMIRegistry, "ServidorChat");
             if (servidor == null)
             {
                 System.out.println("No se pudo obtener la referencia del servidor de chat. ¿Está corriendo el servidor?");
@@ -39,7 +39,6 @@ public class ClienteDeObjetos
 
             objNuevoUsuario = new UsuarioCllbckImpl();
 
-            //a) y b) registrar la referencia remota junto con un nickName único
             String nickName;
             while (true)
             {
@@ -61,7 +60,7 @@ public class ClienteDeObjetos
 
                 switch (opcion)
                 {
-                    case 1: //c) ver nickName de usuarios registrados y activos
+                    case 1:
                         List<String> usuariosActivos = servidor.obtenerNickNamesActivos();
                         System.out.println("Usuarios registrados y activos:");
                         for (String nick : usuariosActivos)
@@ -70,17 +69,17 @@ public class ClienteDeObjetos
                         }
                         break;
 
-                    case 2: //h) consultar la cantidad de usuarios activos
+                    case 2:
                         System.out.println("Cantidad de usuarios activos: " + servidor.obtenerCantidadUsuariosActivos());
                         break;
 
-                    case 3: //g) enviar mensaje público
+                    case 3:
                         System.out.println("Digite el mensaje a enviar a todos: ");
                         String mensajePublico = UtilidadesConsola.leerCadena();
                         servidor.enviarMensaje(nickName, mensajePublico);
                         break;
 
-                    case 4: //e) y f) enviar mensaje privado
+                    case 4:
                         System.out.println("Digite el nickName del usuario destino: ");
                         String nickNameDestino = UtilidadesConsola.leerCadena();
                         System.out.println("Digite el mensaje privado: ");
@@ -89,7 +88,7 @@ public class ClienteDeObjetos
                         System.out.println("Respuesta del servidor: " + respuesta);
                         break;
 
-                    case 5: //d) salir del chat y eliminar la referencia en el servidor
+                    case 5:
                         servidor.salirDelChat(nickName);
                         salir = true;
                         System.out.println("Ha salido del chat. Su referencia fue eliminada del servidor.");
@@ -107,7 +106,6 @@ public class ClienteDeObjetos
         }
         finally
         {
-            //se deja de exportar el objeto callback para que la JVM del cliente pueda terminar
             if (objNuevoUsuario != null)
             {
                 try

@@ -14,20 +14,17 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
     public static final String MSG_RECEPTOR_NO_CONECTADO =
             "El mensaje no se logró enviar porque el usuario receptor no está conectado";
 
-    //a) nickName -> referencia remota del cliente (antes era una lista sin nickName)
     private final Map<String, UsuarioCllbckInt> usuarios;
 
     public ControladorServidorChatImpl() throws RemoteException
     {
-        super();//asignamos el puerto
+        super();
         usuarios = new ConcurrentHashMap<>();
     }
 
-    // ------------------------------------------------------------------ a) y b)
     @Override
     public synchronized boolean registrarReferenciaUsuario(UsuarioCllbckInt usuario, String nickName) throws RemoteException
     {
-        //método que unicamente puede ser accedido por un hilo a la vez
         System.out.println("[SERVIDOR] Invocando al método registrar usuario. nickName solicitado: " + nickName);
 
         if (usuario == null || nickName == null || nickName.trim().isEmpty())
@@ -37,7 +34,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         }
         nickName = nickName.trim();
 
-        //b) validar que el nickName sea único (sin distinguir mayúsculas/minúsculas)
         String nickExistente = buscarNickName(nickName);
         if (nickExistente != null)
         {
@@ -49,7 +45,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
             }
         }
 
-        //una misma referencia remota no puede registrarse dos veces con nickName distinto
         if (usuarios.containsValue(usuario))
         {
             System.out.println("[SERVIDOR] Registro rechazado: la referencia remota ya estaba registrada");
@@ -62,18 +57,16 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         return true;
     }
 
-    // ------------------------------------------------------------------ c)
     @Override
     public List<String> obtenerNickNamesActivos() throws RemoteException
     {
         System.out.println("[SERVIDOR] Invocando al método obtener nickNames activos");
-        depurarUsuariosDesconectados();//solo se devuelven los que realmente están activos
+        depurarUsuariosDesconectados();
         List<String> nickNames = new ArrayList<>(usuarios.keySet());
         Collections.sort(nickNames, String.CASE_INSENSITIVE_ORDER);
         return nickNames;
     }
 
-    // ------------------------------------------------------------------ d)
     @Override
     public synchronized boolean salirDelChat(String nickName) throws RemoteException
     {
@@ -89,7 +82,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         return true;
     }
 
-    // ------------------------------------------------------------------ e) y f)
     @Override
     public String enviarMensajePrivado(String nickNameOrigen, String nickNameDestino, String mensaje) throws RemoteException
     {
@@ -112,16 +104,14 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
 
         UsuarioCllbckInt refDestino = usuarios.get(destino);
 
-        //f) antes de reenviar se comprueba si el receptor está conectado
         if (!verificarConexion(destino, refDestino))
         {
-            //verificarConexion ya eliminó la referencia remota
             return MSG_RECEPTOR_NO_CONECTADO;
         }
 
         try
         {
-            refDestino.notificarMensajePrivado(origen, mensaje);//callback al receptor
+            refDestino.notificarMensajePrivado(origen, mensaje);
             return "Mensaje privado entregado a " + destino;
         }
         catch (RemoteException e)
@@ -132,7 +122,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         }
     }
 
-    // ------------------------------------------------------------------ g)
     @Override
     public void enviarMensaje(String nickNameOrigen, String mensaje) throws RemoteException
     {
@@ -140,7 +129,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         notificarUsuarios(nickNameOrigen + " dice: " + mensaje);
     }
 
-    // ------------------------------------------------------------------ h)
     @Override
     public int obtenerCantidadUsuariosActivos() throws RemoteException
     {
@@ -149,12 +137,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         return usuarios.size();
     }
 
-    // ================================================================== métodos privados
-
-    /**
-     * g) Antes de reenviar el chat público se comprueba que cada usuario esté conectado.
-     * Si terminó abruptamente se elimina su referencia remota.
-     */
     private void notificarUsuarios(String mensaje)
     {
         System.out.println("[SERVIDOR] Invocando al método notificar usuarios");
@@ -164,7 +146,7 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         {
             try
             {
-                entrada.getValue().notificar(mensaje, cantidad);//el servidor hace el callback
+                entrada.getValue().notificar(mensaje, cantidad);
             }
             catch (RemoteException e)
             {
@@ -173,7 +155,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         }
     }
 
-    /** Comprueba la conexión de todos los usuarios y elimina los que terminaron abruptamente. */
     private void depurarUsuariosDesconectados()
     {
         for (Map.Entry<String, UsuarioCllbckInt> entrada : usuarios.entrySet())
@@ -182,10 +163,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         }
     }
 
-    /**
-     * Invoca estaConectado() sobre la referencia remota del cliente.
-     * Si lanza RemoteException el cliente terminó abruptamente y se elimina su referencia.
-     */
     private boolean verificarConexion(String nickName, UsuarioCllbckInt referencia)
     {
         if (referencia == null)
@@ -212,7 +189,6 @@ public class ControladorServidorChatImpl extends UnicastRemoteObject implements 
         }
     }
 
-    /** Busca un nickName registrado sin distinguir mayúsculas/minúsculas. */
     private String buscarNickName(String nickName)
     {
         for (String nick : usuarios.keySet())

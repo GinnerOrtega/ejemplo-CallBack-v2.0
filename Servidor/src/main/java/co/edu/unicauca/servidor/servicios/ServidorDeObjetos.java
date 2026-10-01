@@ -10,7 +10,6 @@ public class ServidorDeObjetos
     {
         try
         {
-            //i) la dirección IP y el puerto del NS se leen del archivo config.properties
             UtilidadesConfiguracion configuracion = new UtilidadesConfiguracion();
             String direccionIpRMIRegistry = configuracion.getDireccionIpNS();
             int numPuertoRMIRegistry = configuracion.getPuertoNS();
@@ -19,11 +18,10 @@ public class ServidorDeObjetos
             System.out.println("  Dirección IP del NS: " + direccionIpRMIRegistry);
             System.out.println("  Puerto del NS      : " + numPuertoRMIRegistry);
 
-            //IP que se publica en la referencia remota del servidor (útil al trabajar en red)
             String hostname = configuracion.getHostnameRMI() != null ? configuracion.getHostnameRMI() : direccionIpRMIRegistry;
             System.setProperty("java.rmi.server.hostname", hostname);
 
-            ControladorServidorChatImpl objRemoto = new ControladorServidorChatImpl();//se le asigna el puerto de escucha del objeto remoto
+            ControladorServidorChatImpl objRemoto = new ControladorServidorChatImpl();
 
             UtilidadesRegistroS.arrancarNS(numPuertoRMIRegistry);
             UtilidadesRegistroS.RegistrarObjetoRemoto(objRemoto, direccionIpRMIRegistry, numPuertoRMIRegistry, "ServidorChat");

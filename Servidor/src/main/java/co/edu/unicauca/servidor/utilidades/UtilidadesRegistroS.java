@@ -48,7 +48,6 @@ public class UtilidadesRegistroS
             } catch (MalformedURLException e)
             {
                     System.out.println("Error url inválida");
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
             }
 		
