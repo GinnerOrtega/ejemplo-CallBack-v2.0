@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Servidor" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="co.edu.unicauca.servidor.servicios.ServidorDeObjetos" />
+    <module name="Servidor" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Servidor" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

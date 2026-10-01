@@ -1,60 +1,51 @@
 package co.edu.unicauca.cliente.utilidades;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class UtilidadesConsola
 {
-	public static int leerEntero()
+    //un único lector para toda la aplicación (evita perder texto del buffer de System.in)
+    private static final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    public static int leerEntero()
     {
-    	String linea = "";
-    	int opcion = 0;
-    	boolean valido = false;
-    	do
-    	{
-    		try
-    		{
-                System.out.println("Ingrese la opcion: ");
-                BufferedReader br = new BufferedReader(new
-                InputStreamReader(System.in));
-                linea = br.readLine();
-                opcion = Integer.parseInt(linea);
-                valido = true;
-    		}
-    		catch(Exception e)
-    		{
-    			System.out.println("Error intente nuevamente...");
-    			valido = false;
-    		}
-    	}while(!valido);
-    	
-    	return opcion;
-    
-    }
-	
-	public static String leerCadena()
-    {
-    	String linea = "";
-    	boolean valido = false;
-    	do
-    	{
-    		try
-    		{
-                System.out.println("Ingrese la opcion: ");
-                BufferedReader br = new BufferedReader(new
-                InputStreamReader(System.in));
-                linea = br.readLine();
-                valido = true;
-    		}
-    		catch(Exception e)
-    		{
-    			System.out.println("Error intente nuevamente...");
-    			valido = false;
-    		}
-    	}while(!valido);
-    	
-    	return linea;
-    
+        while (true)
+        {
+            try
+            {
+                String linea = br.readLine();
+                if (linea == null)
+                {
+                    throw new IllegalStateException("Se cerró la entrada estándar");
+                }
+                return Integer.parseInt(linea.trim());
+            }
+            catch (NumberFormatException | IOException e)
+            {
+                System.out.println("Error, digite un número. Intente nuevamente...");
+            }
+        }
     }
 
+    public static String leerCadena()
+    {
+        while (true)
+        {
+            try
+            {
+                String linea = br.readLine();
+                if (linea == null)
+                {
+                    throw new IllegalStateException("Se cerró la entrada estándar");
+                }
+                return linea;
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error intente nuevamente...");
+            }
+        }
+    }
 }
